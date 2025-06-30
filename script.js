@@ -1,52 +1,86 @@
-// Fichier : netlify/functions/generate-image.js
-const fetch = require('node-fetch');
-const FormData = require('form-data');
+// Fichier : script.js (à la racine de votre projet)
+// Version corrigée avec le bon nom de fonction : get-ai-ideas
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
-  }
+document.addEventListener('DOMContentLoaded', function() {
+  const findProjectsButton = document.querySelector('.bot-section button');
+  const materiauxInput = document.getElementById('materiaux');
+  const ideaListDiv = document.getElementById('ideaList');
+  const imageContainer = document.getElementById('imageGeneratorContainer');
 
-  const CLIPDROP_API_KEY = process.env.CLIPDROP_API_KEY;
-  if (!CLIPDROP_API_KEY) {
-    return { statusCode: 500, body: JSON.stringify({ error: "Erreur serveur: La clé API Clipdrop n'est pas configurée." }) };
-  }
-
-  try {
-    const { prompt } = JSON.parse(event.body);
-    const form = new FormData();
-    form.append('prompt', prompt);
-
-    const response = await fetch('https://api.clipdrop.co/v1/text-to-image', {
-      method: 'POST',
-      headers: {
-        'x-api-key': CLIPDROP_API_KEY,
-        ...form.getHeaders() // On remet cette ligne cruciale
-      },
-      body: form,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Erreur de l'API Clipdrop: ${response.status}`, errorText);
-      throw new Error(`Clipdrop API Error: ${errorText}`);
+  // ---- FONCTION 1 : Gérer le clic sur le bouton principal ----
+  findProjectsButton.addEventListener('click', async () => {
+    const materials = materiauxInput.value;
+    if (materials.trim() === '') {
+      ideaListDiv.innerHTML = '<p>Veuillez décrire le matériel dont vous disposez.</p>';
+      return;
     }
 
-    const imageBuffer = await response.buffer();
-    
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        image: `data:image/png;base64,${imageBuffer.toString('base64')}`
-      })
-    };
+    // Afficher un état de chargement
+    ideaListDiv.innerHTML = '<p>Recherche d\'idées en cours...</p>';
+    imageContainer.innerHTML = ''; // Nettoyer l'ancienne image
+    findProjectsButton.disabled = true;
 
-  } catch (error) {
-    console.error("Erreur dans la fonction generate-image:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
+    try {
+      // Appel à notre 1ère fonction Netlify avec le bon nom
+      const response = await fetch('/.netlify/functions/get-ai-ideas', { // <-- CORRECTION APPLIQUÉE ICI
+        method: 'POST',
+        body: JSON.stringify({ materials: materials })
+      });
+
+      if (!response.ok) throw new Error('Erreur lors de la génération des idées.');
+      
+      const ideas = await response.json();
+      displayIdeas(ideas);
+
+    } catch (error) {
+      console.error(error);
+      ideaListDiv.innerHTML = `<p>Désolé, une erreur est survenue : ${error.message}</p>`;
+    } finally {
+      findProjectsButton.disabled = false;
+    }
+  });
+
+  // ---- FONCTION 2 : Afficher les idées et les rendre cliquables ----
+  function displayIdeas(ideas) {
+    ideaListDiv.innerHTML = '<h3>Cliquez sur une idée pour la visualiser :</h3>';
+    
+    ideas.forEach(idea => {
+      const ideaElement = document.createElement('div');
+      ideaElement.className = 'idea-item';
+      ideaElement.innerHTML = `<h4>${idea.title}</h4><p>${idea.description}</p>`;
+      
+      ideaElement.addEventListener('click', () => {
+        document.querySelectorAll('.idea-item').forEach(el => el.classList.remove('selected'));
+        ideaElement.classList.add('selected');
+        
+        generateImageForIdea(idea.title);
+      });
+      
+      ideaListDiv.appendChild(ideaElement);
+    });
   }
-};
+
+  // ---- FONCTION 3 : Appeler la fonction d'image et afficher le résultat ----
+  async function generateImageForIdea(prompt) {
+    imageContainer.innerHTML = '<p>Génération du visuel en cours...</p>';
+    
+    try {
+      // L'URL pour generate-image était déjà correcte
+      const response = await fetch('/.netlify/functions/generate-image', {
+        method: 'POST',
+        body: JSON.stringify({ prompt: prompt })
+      });
+      
+      if (!response.ok) throw new Error('Erreur lors de la génération de l\'image.');
+
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+
+      imageContainer.innerHTML = `<img src="${data.image}" alt="Visualisation du projet : ${prompt}">`;
+
+    } catch (error) {
+      console.error(error);
+      imageContainer.innerHTML = `<p>Désolé, impossible de générer l'image : ${error.message}</p>`;
+    }
+  }
+});
