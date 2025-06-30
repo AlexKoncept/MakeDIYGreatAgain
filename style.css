@@ -1,0 +1,223 @@
+/* ---- VARIABLES ET STYLES DE BASE ---- */
+:root {
+  --rouge: #C1442E;
+  --ecru: #F5F1E7;
+  --noir: #1E1E1E;
+  --bois: #D2A679;
+  --vert: #6D8B74;
+  --gris: #A8A8A8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  background-color: var(--ecru);
+  color: var(--noir);
+}
+
+/* ---- ACCESSIBILITÉ ---- */
+:focus-visible {
+  outline: 2px solid var(--rouge);
+  outline-offset: 2px;
+}
+
+/* ---- HEADER ---- */
+header {
+  background-color: var(--rouge);
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+  font-family: 'Staatliches', sans-serif;
+}
+header h1 { margin: 0; font-size: 2.5rem; }
+header img { max-height: 120px; display: block; margin: 0 auto 10px auto; }
+
+/* ---- NAVIGATION ---- */
+nav {
+  background-color: var(--noir);
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.5rem;
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease-in-out;
+}
+nav a:hover {
+  color: var(--rouge);
+}
+
+/* ---- SECTIONS GÉNÉRALES ---- */
+.section {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeIn 0.8s ease-in-out both;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.section h2 {
+  font-family: 'Staatliches', sans-serif;
+  color: var(--rouge);
+}
+.manifeste {
+  background-color: var(--bois);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* ---- SECTION \"ATELIER DE L'IA\" ---- */
+.bot-section {
+  background-color: var(--vert);
+  padding: 2rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+}
+.bot-section label,
+.bot-section input,
+.bot-section button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.bot-section input[type=\"text\"] {
+  padding: 0.75rem;
+  border-radius: 5px;
+  border: 2px solid var(--ecru);
+  background-color: var(--ecru);
+  font-family: 'Open Sans', sans-serif;
+}
+.bot-section input[type=\"text\"]:focus {
+  outline: 2px solid var(--rouge);
+}
+
+.bot-section button {
+  background-color: var(--rouge);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.bot-section button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+.bot-section button:disabled {
+  background-color: var(--gris);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Conteneur pour la liste des idées */
+#ideaList {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Style des boutons pour chaque idée générée */
+.idea-button {
+  background-color: var(--ecru);
+  color: var(--noir);
+  border: 2px solid var(--bois);
+  padding: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s;
+  width: 100%;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.idea-button:hover {
+  background-color: var(--rouge);
+  border-color: var(--rouge);
+  color: white;
+}
+
+/* ... (tout votre CSS existant) ... */
+
+/* Conteneur pour le générateur d'images */
+#imageGeneratorContainer {
+  margin-top: 1.5rem;
+  text-align: center; /* Pour centrer le bouton et l'image */
+}
+
+/* Style pour le bouton de génération d'image */
+.image-button {
+  background-color: var(--bois); /* Couleur différente pour le distinguer */
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+.image-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+.image-button:disabled {
+  background-color: var(--gris);
+  cursor: not-allowed;
+}
+
+/* Style pour l'image générée */
+#imageGeneratorContainer img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 4px solid var(--ecru);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  margin-top: 1rem;
+}
+
+/* Conteneur pour le tutoriel détaillé */
+#tutoDetail {
+  margin-top: 1.5rem;
+  background: var(--ecru);
+  padding: 1.5rem;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* ---- FOOTER ---- */
+footer {
+  background-color: var(--noir);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* ---- RESPONSIVE DESIGN ---- */
+@media (max-width: 768px) {
+  .section {
+    padding: 1.5rem 1rem;
+  }
+  nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+  }
+}

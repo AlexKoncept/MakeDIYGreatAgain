@@ -1,0 +1,17 @@
+# ===================================================
+# Fichier de configuration principal pour Netlify
+# Ce fichier garantit que les fonctions sont détectées
+# ===================================================
+
+# Paramètres de construction (build)
+[build]
+  # Dossier qui sera publié comme étant le site
+  publish = "."
+  
+  # Dossier où Netlify doit chercher les fonctions
+  functions = "netlify/functions"
+
+# Paramètres spécifiques aux fonctions Node.js
+[functions]
+  # Indique à Netlify comment "empaqueter" les fonctions
+  node_bundler = "esbuild"

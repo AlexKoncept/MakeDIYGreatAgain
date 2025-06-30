@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Make DIY Great Again</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Open+Sans&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="favicon.png" />
+</head>
+<body>
+  <header>
+    <a href="#"><img src="logo.png" alt="Logo Make DIY Great Again" /></a>
+    <h1>Make DIY Great Again</h1>
+    <p>by Alex Koncept</p>
+  </header>
+  <nav>
+    <a href="#manifeste">Manifeste</a>
+    <a href="#tutos">Tutos</a>
+    <a href="#contribuer">Contribuer</a>
+    <a href="#ai-workshop">L'Atelier de l'IA</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <main>
+    <section class="section" id="manifeste">
+      <h2>Le Manifeste</h2>
+      <div class="manifeste">
+        <p>
+          Nous croyons au pouvoir de la création, de la débrouille et du partage.<br>
+          Créer, réparer, détourner, c’est résister à l’obsolescence et au gaspillage.<br>
+          Ici, chaque bout de câble, carte mère ou boîte en carton peut devenir un nouveau projet.<br>
+          <strong>Make DIY Great Again.</strong>
+        </p>
+        <ul>
+          <li>Créer ou réimaginer au lieu de consommer ou dépenser</li>
+          <li>Ce que tu jettes, quelqu’un d’autre l’invente</li>
+          <li>Un tournevis, c’est une baguette magique</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="tutos">
+      <h2>Projets et Tutos</h2>
+      <ul>
+        <li><strong>Vieux PC + Raspberry Pi :</strong> Crée un serveur local ou une borne rétro gaming</li>
+        <li><strong>Arduino + LED :</strong> Fabrique une veilleuse programmable</li>
+        <li><strong>Moteur + bois :</strong> Mini tour ou machine à gravure DIY</li>
+        <li><strong>Bouteilles plastique :</strong> Range-câbles ou modules de rangement empilables</li>
+      </ul>
+    </section>
+
+    <section class="section" id="contribuer">
+      <h2>Contribuer</h2>
+      <p>Tu as une idée, une création ou une astuce ? Partage-la avec la communauté.</p>
+      <ul>
+        <li>Propose un tutoriel ou un plan</li>
+        <li>Soumets des photos de ton projet</li>
+        <li>Participe à un défi du mois DIY</li>
+      </ul>
+  <p>📩 Tu peux m’envoyer ta contribution à :  
+    <a href="mailto:alexkonceptuniverse@gmail.com">alexkonceptuniverse@gmail.com</a>
+  </p>
+</section>
+
+<section class="section bot-section" id="ai-workshop">
+  <h2>L'Atelier de l'IA</h2>
+  <p>Décris ton matériel, et notre IA te proposera plusieurs projets. Clique sur une idée pour obtenir un mini-tuto !</p>
+  
+  <label for="materiaux">De quoi disposes-tu ?</label>
+  <input type="text" id="materiaux" name="materiaux" placeholder="Ex: une vieille souris, des bouteilles en plastique, un arduino...">
+
+  <button>Trouve-moi des projets !</button>
+  
+  <div id="ideaList"></div>
+  <div id="tutoDetail"></div>
+  <div id="imageGeneratorContainer"></div>
+</section>
+
+---------
+
+  </main>
+
+  <footer>
+    <p>© 2025 Make DIY Great Again by Alex Koncept</p>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
