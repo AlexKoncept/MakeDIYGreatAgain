@@ -1,5 +1,6 @@
 // Fichier : netlify/functions/generate-image.js
-// AUCUN require ici !
+const fetch = require('node-fetch');
+const FormData = require('form-data');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -13,17 +14,14 @@ exports.handler = async (event) => {
 
   try {
     const { prompt } = JSON.parse(event.body);
-    
-    // On utilise l'objet FormData natif de Node.js
     const form = new FormData();
     form.append('prompt', prompt);
 
-    // On utilise le fetch natif de Node.js
     const response = await fetch('https://api.clipdrop.co/v1/text-to-image', {
       method: 'POST',
       headers: {
         'x-api-key': CLIPDROP_API_KEY,
-        // PAS besoin de .getHeaders() avec le fetch natif, c'est automatique !
+        ...form.getHeaders() // On remet cette ligne cruciale
       },
       body: form,
     });
@@ -34,9 +32,7 @@ exports.handler = async (event) => {
       throw new Error(`Clipdrop API Error: ${errorText}`);
     }
 
-    // On doit utiliser .arrayBuffer() avec le fetch natif, puis le convertir en Buffer
-    const imageArrayBuffer = await response.arrayBuffer();
-    const imageBuffer = Buffer.from(imageArrayBuffer);
+    const imageBuffer = await response.buffer();
     
     return {
       statusCode: 200,
