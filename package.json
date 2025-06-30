@@ -1,8 +1,4 @@
 {
   "name": "make-diy-great-again",
-  "version": "1.0.0",
-  "dependencies": {
-    "form-data": "^4.0.0",
-    "node-fetch": "^2.6.7"
-  }
+  "version": "1.0.0"
 }
