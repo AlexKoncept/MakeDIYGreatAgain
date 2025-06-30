@@ -1,10 +1,9 @@
-const fetch = require('node-fetch');
+// Fichier : netlify/functions/get-ai-ideas.js
+// La ligne "require('node-fetch')" a été supprimée.
 
-// La clé est récupérée depuis les variables d'environnement de Netlify
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 exports.handler = async (event) => {
-  // On ne traite que les requêtes POST
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
@@ -12,6 +11,7 @@ exports.handler = async (event) => {
   const { prompt } = JSON.parse(event.body);
 
   try {
+    // Utilise le fetch natif, pas besoin de la variable "fetch"
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
