@@ -1,5 +1,5 @@
 // Fichier : script.js
-// Version de débogage pour voir la réponse du TUTORIEL
+// Version finale qui gère la structure de tutoriel en liste
 
 document.addEventListener('DOMContentLoaded', function() {
   const findProjectsButton = document.querySelector('.bot-section button');
@@ -62,11 +62,24 @@ document.addEventListener('DOMContentLoaded', function() {
       const tutoData = await response.json();
 
       // ======================================================================
-      // LIGNE DE DÉBOGAGE POUR LE TUTORIEL
-      console.log('Données brutes du tutoriel (tutoData) :', tutoData);
+      // CORRECTION FINALE APPLIQUÉE ICI
       // ======================================================================
+      // 1. On vérifie que tutoData.tutorial est bien une liste.
+      if (!Array.isArray(tutoData.tutorial)) {
+        throw new Error("Le format du tutoriel reçu n'est pas une liste.");
+      }
 
-      tutoDetailDiv.innerHTML = `<h4>Procédure : ${title}</h4><p>${tutoData.tutorial.replace(/\n/g, '<br>')}</p>`;
+      // 2. On transforme la liste d'objets en une liste HTML (<ol><li>...</li></ol>)
+      const tutorialHtml = tutoData.tutorial.map(stepObject => {
+        // Pour chaque objet { "étape X": "texte" }, on extrait le texte.
+        const stepText = Object.values(stepObject)[0];
+        return `<li>${stepText}</li>`; // On l'entoure d'une balise <li>
+      }).join(''); // On assemble toutes les balises <li> en une seule chaîne
+
+      // 3. On affiche le titre et la liste numérotée (<ol>)
+      tutoDetailDiv.innerHTML = `<h4>Procédure : ${title}</h4><ol>${tutorialHtml}</ol>`;
+      
+      // On lance la génération de l'image, car le tuto est maintenant affiché.
       generateImageForIdea(title);
 
     } catch (error) {
