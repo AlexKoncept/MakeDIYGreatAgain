@@ -1,5 +1,5 @@
 // Fichier : netlify/functions/get-ai-ideas.js
-// Version avec des prompts BEAUCOUP plus stricts pour de meilleurs résultats
+// Version avec une instruction stricte pour la langue française
 
 const fetch = require('node-fetch');
 
@@ -15,11 +15,13 @@ exports.handler = async (event) => {
 
     // CAS 1: Obtenir des idées de projets
     if (body.materials) {
-      prompt = `Tu es un ingénieur Maker et un expert en upcycling. Ton public est débutant. Propose 3 idées de projets **pratiques, réalistes et réalisables** avec le matériel suivant : "${body.materials}". **Ignore les idées farfelues ou impossibles**. Chaque idée doit être concise. Réponds uniquement avec un objet JSON qui contient une seule clé "projects", qui est une liste. Chaque élément de la liste doit avoir les clés "title" et "description".`;
+      // Instruction ajoutée : La réponse doit être entièrement en français.
+      prompt = `Tu es un ingénieur Maker et un expert en upcycling. Ton public est débutant. Propose 3 idées de projets pratiques, réalistes et réalisables avec le matériel suivant : "${body.materials}". La réponse doit être entièrement en français. Ignore les idées farfelues ou impossibles. Chaque idée doit être concise. Réponds uniquement avec un objet JSON qui contient une seule clé "projects", qui est une liste. Chaque élément de la liste doit avoir les clés "title" et "description".`;
     } 
     // CAS 2: Obtenir un tutoriel
     else if (body.idea_title) {
-      prompt = `Tu es un tuteur DIY qui s'adresse à des débutants. Rédige un tutoriel **simple, concret et réalisable en 4 étapes maximum** pour le projet suivant : "${body.idea_title}". Le tutoriel doit se concentrer sur des actions physiques claires (ex: "Couper le bois", "Percer un trou", "Souder le fil rouge", "Coller les deux parties"). **N'invente pas d'étapes abstraites ou logicielles complexes**. Réponds uniquement avec un objet JSON contenant une seule clé "tutorial", qui est une LISTE d'objets. Chaque objet représente une étape et a la forme { "étape X": "texte de l'étape" }.`;
+      // Instruction ajoutée : Rédige le tutoriel en français.
+      prompt = `Tu es un tuteur DIY qui s'adresse à des débutants. Rédige un tutoriel simple, concret et réalisable en 4 étapes maximum pour le projet suivant : "${body.idea_title}". Rédige le tutoriel en français. Le tutoriel doit se concentrer sur des actions physiques claires (ex: "Couper le bois", "Percer un trou"). N'invente pas d'étapes abstraites. Réponds uniquement avec un objet JSON contenant une seule clé "tutorial", qui est une LISTE d'objets. Chaque objet représente une étape et a la forme { "étape X": "texte de l'étape" }.`;
     } 
     else {
       return { statusCode: 400, body: JSON.stringify({ error: "Requête invalide." }) };
@@ -31,7 +33,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         model: "llama3-8b-8192",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.6, // Un peu moins de créativité pour plus de réalisme
+        temperature: 0.6,
         response_format: { type: "json_object" },
       }),
     });
