@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const FormData = require('form-data');
 
 exports.handler = async (event) => {
-  console.log('La fonction generate-image a été appelée.'); // LOG 1
+  console.log('LOG 1: La fonction generate-image a été appelée.');
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -13,22 +13,21 @@ exports.handler = async (event) => {
 
   const CLIPDROP_API_KEY = process.env.CLIPDROP_API_KEY;
   if (!CLIPDROP_API_KEY) {
-    const errorMsg = "ERREUR CRITIQUE : La variable d'environnement CLIPDROP_API_KEY est manquante.";
-    console.error(errorMsg); // LOG 2
+    const errorMsg = "LOG 2: ERREUR CRITIQUE : La variable d'environnement CLIPDROP_API_KEY est manquante.";
+    console.error(errorMsg);
     return { statusCode: 500, body: JSON.stringify({ error: errorMsg }) };
   }
   
-  console.log('Clé API Clipdrop trouvée.'); // LOG 3
+  console.log('LOG 3: Clé API Clipdrop trouvée.');
 
   try {
     const { prompt } = JSON.parse(event.body);
-    console.log('Prompt reçu pour l\'image :', prompt); // LOG 4
+    console.log('LOG 4: Prompt reçu pour l\'image :', prompt);
 
     const form = new FormData();
-    // Amélioration du prompt pour de meilleurs résultats visuels
-    const finalPrompt = `Photo de haute qualité d'un projet créatif DIY (fait maison) : "${prompt}". Style épuré, sur fond uni.`;
+    const finalPrompt = `Photo de haute qualité d'un projet créatif DIY (fait maison) : "${prompt}". Style épuré, sur fond uni, photographie de produit.`;
     form.append('prompt', finalPrompt);
-    console.log('Prompt final envoyé à Clipdrop :', finalPrompt); // LOG 5
+    console.log('LOG 5: Prompt final envoyé à Clipdrop :', finalPrompt);
 
     const response = await fetch('https://api.clipdrop.co/v1/text-to-image', {
       method: 'POST',
@@ -41,12 +40,12 @@ exports.handler = async (event) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      const errorMsg = `L'API Clipdrop a renvoyé une erreur. Statut: ${response.status}. Réponse: ${errorText}`;
-      console.error(errorMsg); // LOG 6
+      const errorMsg = `LOG 6: L'API Clipdrop a renvoyé une erreur. Statut: ${response.status}. Réponse: ${errorText}`;
+      console.error(errorMsg);
       throw new Error(errorMsg);
     }
 
-    console.log('Réponse de Clipdrop reçue avec succès.'); // LOG 7
+    console.log('LOG 7: Réponse de Clipdrop reçue avec succès.');
     const imageBuffer = await response.buffer();
     
     return {
@@ -58,8 +57,8 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    const errorMsg = `Une erreur est survenue dans le bloc try-catch de generate-image : ${error.message}`;
-    console.error(errorMsg); // LOG 8
+    const errorMsg = `LOG 8: Une erreur est survenue dans le bloc try-catch de generate-image : ${error.message}`;
+    console.error(errorMsg);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: errorMsg })
