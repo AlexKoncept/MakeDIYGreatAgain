@@ -232,4 +232,28 @@ footer {
     padding: 1rem;
     text-align: center;
   }
+
+}
+/* Fichier : style.css */
+/* Style pour les cartes d'idées de projet */
+
+.idea-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.idea-item:hover {
+  border-color: #3b82f6; /* Bleu au survol */
+  transform: translateY(-2px); /* Léger effet de soulèvement */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.idea-item.selected {
+  background-color: #eef2ff; /* Fond bleu très clair pour la sélection */
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }

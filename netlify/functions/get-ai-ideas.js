@@ -1,3 +1,6 @@
+// Fichier : netlify/functions/get-ai-ideas.js
+// Version avec des prompts BEAUCOUP plus stricts pour de meilleurs résultats
+
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
@@ -10,11 +13,15 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     let prompt;
 
+    // CAS 1: Obtenir des idées de projets
     if (body.materials) {
-      prompt = `Tu es un expert du DIY. Propose 3 idées de projets avec ce matériel : "${body.materials}". Réponds uniquement avec un objet JSON qui contient une seule clé "projects", qui est une liste. Chaque élément de la liste doit avoir les clés "title" et "description".`;
-    } else if (body.idea_title) {
-      prompt = `Tu es un tuteur DIY. Rédige un mini-tutoriel en 3-4 étapes pour ce projet : "${body.idea_title}". Réponds uniquement avec un objet JSON contenant une seule clé "tutorial", qui est une LISTE d'objets. Chaque objet représente une étape et a la forme { "étape X": "texte de l'étape" }.`;
-    } else {
+      prompt = `Tu es un ingénieur Maker et un expert en upcycling. Ton public est débutant. Propose 3 idées de projets **pratiques, réalistes et réalisables** avec le matériel suivant : "${body.materials}". **Ignore les idées farfelues ou impossibles**. Chaque idée doit être concise. Réponds uniquement avec un objet JSON qui contient une seule clé "projects", qui est une liste. Chaque élément de la liste doit avoir les clés "title" et "description".`;
+    } 
+    // CAS 2: Obtenir un tutoriel
+    else if (body.idea_title) {
+      prompt = `Tu es un tuteur DIY qui s'adresse à des débutants. Rédige un tutoriel **simple, concret et réalisable en 4 étapes maximum** pour le projet suivant : "${body.idea_title}". Le tutoriel doit se concentrer sur des actions physiques claires (ex: "Couper le bois", "Percer un trou", "Souder le fil rouge", "Coller les deux parties"). **N'invente pas d'étapes abstraites ou logicielles complexes**. Réponds uniquement avec un objet JSON contenant une seule clé "tutorial", qui est une LISTE d'objets. Chaque objet représente une étape et a la forme { "étape X": "texte de l'étape" }.`;
+    } 
+    else {
       return { statusCode: 400, body: JSON.stringify({ error: "Requête invalide." }) };
     }
 
@@ -24,7 +31,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         model: "llama3-8b-8192",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.7,
+        temperature: 0.6, // Un peu moins de créativité pour plus de réalisme
         response_format: { type: "json_object" },
       }),
     });
