@@ -102,7 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // On utilise DIRECTEMENT le titre comme prompt, comme vous l'avez suggéré.
-    const finalPrompt = title; 
+    
+    const finalPrompt = `DIY ${title}`; 
     const promptBox = document.getElementById('modal-prompt-box');
     
     promptBox.innerHTML = `
