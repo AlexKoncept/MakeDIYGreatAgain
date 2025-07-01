@@ -1,5 +1,5 @@
 // Fichier : script.js
-// Nouvelle version suivant la logique en 3 temps : Idées -> Tuto -> Image
+// VERSION FINALE : Contournement de l'API par un lien vers un site externe.
 
 document.addEventListener('DOMContentLoaded', function() {
   // Sélection des éléments de la page
@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const materiauxInput = document.getElementById('materiaux');
   const ideaListDiv = document.getElementById('ideaList');
   const tutoDetailDiv = document.getElementById('tutoDetail');
-  const imageContainer = document.getElementById('imageGeneratorContainer');
+  const imageContainer = document.getElementById('imageGeneratorContainer'); // On va réutiliser ce conteneur
 
   // --- ACTION 1 : Clic sur "Trouve-moi des projets !" ---
   findProjectsButton.addEventListener('click', getIdeas);
@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    // Réinitialiser l'interface pour une nouvelle recherche
     ideaListDiv.innerHTML = '<p>Recherche d\'idées en cours...</p>';
     tutoDetailDiv.innerHTML = '';
     imageContainer.innerHTML = '';
@@ -43,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // --- ACTION 2 : Afficher les idées et les rendre cliquables ---
+  // --- ACTION 2 : Afficher les idées et rendre cliquables ---
   function displayIdeas(projectList) {
     ideaListDiv.innerHTML = '<h3>Cliquez sur une idée pour obtenir le tuto :</h3>';
     
@@ -53,10 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
       ideaElement.innerHTML = `<h4>${idea.title}</h4><p>${idea.description}</p>`;
       
       ideaElement.addEventListener('click', () => {
-        // Mettre en surbrillance l'idée sélectionnée
         document.querySelectorAll('.idea-item').forEach(el => el.classList.remove('selected'));
         ideaElement.classList.add('selected');
-        // Passer à l'étape suivante : obtenir le tutoriel
         getTutorialForIdea(idea.title);
       });
       
@@ -64,10 +61,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // --- ACTION 3 : Obtenir et afficher le tutoriel ET le bouton pour l'image ---
+  // --- ACTION 3 : Obtenir et afficher le tutoriel ET le nouvel espace de visualisation ---
   async function getTutorialForIdea(title) {
     tutoDetailDiv.innerHTML = '<p>Génération du tutoriel en cours...</p>';
-    imageContainer.innerHTML = ''; // Vider l'ancienne image
+    imageContainer.innerHTML = '';
 
     try {
       const response = await fetch('/.netlify/functions/get-ai-ideas', {
@@ -83,21 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return `<li>${stepText}</li>`;
       }).join('');
 
-      // Afficher le tutoriel complet
+      // Afficher le tutoriel
       tutoDetailDiv.innerHTML = `<h4>Procédure : ${title}</h4><ol>${tutorialHtml}</ol>`;
 
-      // NOUVEAU : On crée dynamiquement un bouton pour générer l'image
-      const generateImageBtn = document.createElement('button');
-      generateImageBtn.textContent = 'Générer un visuel du projet';
-      // Quand on clique sur ce nouveau bouton, on appelle la fonction pour l'image
-      generateImageBtn.addEventListener('click', () => {
-        generateImageBtn.disabled = true;
-        generateImageBtn.textContent = 'Génération en cours...';
-        generateImageForIdea(title, generateImageBtn);
-      });
-      
-      // On ajoute ce bouton sous le tutoriel
-      tutoDetailDiv.appendChild(generateImageBtn);
+      // On affiche maintenant le cadre de visualisation
+      displayVisualizationBox(title);
 
     } catch (error) {
       console.error(error);
@@ -105,27 +92,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // --- ACTION 4 : Générer l'image (appelée par le nouveau bouton) ---
-  async function generateImageForIdea(prompt, button) {
-    imageContainer.innerHTML = '<p>Communication avec le générateur d\'images...</p>';
-    try {
-      const response = await fetch('/.netlify/functions/generate-image', {
-        method: 'POST',
-        body: JSON.stringify({ prompt: prompt })
-      });
-      if (!response.ok) throw new Error('Le serveur d\'images a renvoyé une erreur.');
-      
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
-      
-      imageContainer.innerHTML = `<img src="${data.image}" alt="Visualisation du projet : ${prompt}">`;
-      button.style.display = 'none'; // Cacher le bouton une fois l'image générée
+  // --- NOUVELLE FONCTION : Créer et afficher le cadre de visualisation ---
+  function displayVisualizationBox(title) {
+    const finalPrompt = `(best quality, 4k, 8k, ultra highres), masterpiece, a professional photo of a DIY project: ${title}. Product shot, studio lighting, plain background.`;
+    
+    // On utilise le conteneur d'image existant pour y mettre notre nouveau cadre
+    imageContainer.innerHTML = `
+      <div class="visualize-section">
+        <h4>Visualiser le projet (étape optionnelle)</h4>
+        <p>Copiez le prompt ci-dessous et collez-le dans le générateur d'images gratuit.</p>
+        <div class="prompt-box">
+          <input type="text" value="${finalPrompt}" readonly />
+          <button id="copy-prompt-btn">Copier</button>
+        </div>
+        <a href="https://www.craiyon.com/" target="_blank" rel="noopener noreferrer" class="external-generator-btn">
+          Aller sur Craiyon.com (générateur gratuit)
+        </a>
+      </div>
+    `;
 
-    } catch (error) {
-      console.error(error);
-      imageContainer.innerHTML = `<p>Désolé, impossible de générer l'image : ${error.message}</p>`;
-      button.disabled = false;
-      button.textContent = 'Réessayer de générer un visuel';
-    }
+    // Ajouter la logique pour le bouton "Copier"
+    document.getElementById('copy-prompt-btn').addEventListener('click', (e) => {
+      const input = e.target.previousElementSibling;
+      navigator.clipboard.writeText(input.value);
+      e.target.textContent = 'Copié !';
+      setTimeout(() => { e.target.textContent = 'Copier'; }, 2000);
+    });
   }
 });

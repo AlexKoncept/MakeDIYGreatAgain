@@ -257,3 +257,66 @@ footer {
   border-color: #3b82f6;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
+/* Fichier : style.css */
+/* Style pour la nouvelle section de visualisation */
+
+.visualize-section {
+  border: 1px dashed #3b82f6;
+  background-color: #f5f8ff;
+  padding: 20px;
+  margin-top: 25px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.visualize-section h4 {
+  margin-top: 0;
+  color: #333;
+}
+
+.visualize-section p {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.prompt-box {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.prompt-box input {
+  flex-grow: 1; /* L'input prend toute la place disponible */
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 0.8em;
+  background-color: #fff;
+  color: #333;
+  border-radius: 4px 0 0 4px; /* Coins arrondis à gauche */
+}
+
+.prompt-box button {
+  border: 1px solid #3b82f6;
+  background-color: #3b82f6;
+  color: white;
+  padding: 0 15px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0; /* Coins arrondis à droite */
+  flex-shrink: 0; /* Empêche le bouton de rétrécir */
+}
+
+.external-generator-btn {
+  display: inline-block;
+  background-color: #16a34a; /* Un bouton vert pour l'action principale */
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.external-generator-btn:hover {
+  background-color: #15803d;
+}
