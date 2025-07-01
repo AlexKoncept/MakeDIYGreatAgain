@@ -1,67 +1,57 @@
 // Fichier : netlify/functions/generate-image.js
-// Version de débogage pour Fireworks.ai
+// VERSION FINALE utilisant l'API gratuite et fiable de Hugging Face
 
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
-  console.log('LOG 1: La fonction generate-image (version Fireworks) a été appelée.');
-
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
 
-  const FIREWORKS_API_KEY = process.env.FIREWORKS_API_KEY;
-  if (!FIREWORKS_API_KEY || FIREWORKS_API_KEY === '') {
-    const errorMsg = "LOG 2: ERREUR CRITIQUE : La variable d'environnement FIREWORKS_API_KEY est manquante ou vide.";
-    console.error(errorMsg);
-    return { statusCode: 500, body: JSON.stringify({ error: errorMsg }) };
-  }
-  
-  console.log('LOG 3: Clé API Fireworks trouvée (commence par: ' + FIREWORKS_API_KEY.substring(0, 5) + '...).');
+  // On utilise la clé API Hugging Face
+  const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
+  if (!HUGGINGFACE_API_KEY) return { statusCode: 500, body: JSON.stringify({ error: "HUGGINGFACE_API_KEY non configurée." }) };
 
   try {
     const { prompt } = JSON.parse(event.body);
-    console.log('LOG 4: Prompt reçu :', prompt);
-
-    const finalPrompt = `Photo de haute qualité, style photographie de produit, d'un projet créatif DIY (fait maison) : "${prompt}". Sur fond uni, couleurs vives.`;
-    const requestBody = {
-      model: 'stable-diffusion-xl-1024-v1-0',
-      prompt: finalPrompt,
-      height: 1024,
-      width: 1024,
-    };
+    // Un prompt efficace pour Stable Diffusion
+    const finalPrompt = `(best quality, 4k, 8k, ultra highres), masterpiece, a professional photo of a DIY project: ${prompt}. Product shot, studio lighting, plain background.`;
     
-    console.log('LOG 5: Corps de la requête envoyé à Fireworks :', JSON.stringify(requestBody, null, 2));
-
+    // Appel à l'API d'inférence de Hugging Face avec un modèle Stable Diffusion éprouvé
     const response = await fetch(
-      'https://api.fireworks.ai/inference/v1/text_to_image',
+      'https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${FIREWORKS_API_KEY}`,
+          // L'authentification est un simple Bearer token
+          'Authorization': `Bearer ${HUGGINGFACE_API_KEY}`, 
         },
-        body: JSON.stringify(requestBody),
+        // Le corps de la requête est encore plus simple : juste une clé "inputs"
+        body: JSON.stringify({
+          inputs: finalPrompt,
+        }),
       }
     );
 
     if (!response.ok) {
       const errorText = await response.text();
-      const errorMsg = `LOG 6: L'API Fireworks a renvoyé une erreur. Statut: ${response.status}. Réponse: ${errorText}`;
-      console.error(errorMsg);
-      throw new Error(errorMsg);
+      console.error(`Erreur API Hugging Face: ${response.status} - ${errorText}`);
+      // Si le modèle est en train de charger, on renvoie un message clair
+      if (response.status === 503) {
+        throw new Error("Le modèle d'image est en cours de chargement, veuillez patienter 30 secondes et réessayer.");
+      }
+      throw new Error(`Le service d'image Hugging Face a renvoyé une erreur.`);
     }
 
-    console.log('LOG 7: Réponse de Fireworks reçue avec succès.');
-    const data = await response.json();
-    const base64Image = data.artifacts[0].base64;
-
+    // Hugging Face renvoie directement l'image binaire, pas du JSON
+    const imageBuffer = await response.buffer();
+    
     return {
       statusCode: 200,
-      body: JSON.stringify({ image: `data:image/png;base64,${base64Image}` })
+      // On convertit le buffer en base64 pour l'afficher dans le navigateur
+      body: JSON.stringify({ image: `data:image/jpeg;base64,${imageBuffer.toString('base64')}` })
     };
   } catch (error) {
-    const errorMsg = `LOG 8: Une erreur est survenue dans le bloc try-catch : ${error.message}`;
-    console.error(errorMsg);
-    return { statusCode: 500, body: JSON.stringify({ error: errorMsg }) };
+    console.error("Erreur dans la fonction generate-image:", error);
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
   }
 };
