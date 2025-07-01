@@ -46,7 +46,7 @@ Créée par un passionné de tech, de montres, de bidouille et d'IA (👋 salut 
 
 🙌 Rejoindre le Koncept
 Tu es passionné de DIY ? Tu veux contribuer ?
-📧 Contacte-moi : alexkoncept.wordpress.com
+📧 Contacte-moi : alexkonceptuniverse@gmail.com
 
 🧠 Un projet par passion, pour les passionnés.
 Make DIY Great Again n’est pas une simple app. C’est une philosophie de création, une ode à la récupération, une réponse au monde du jetable.
