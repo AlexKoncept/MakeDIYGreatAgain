@@ -1,49 +1,58 @@
 // Fichier : netlify/functions/generate-image.js
-// NOUVELLE VERSION utilisant Fireworks.ai pour une meilleure fiabilité
+// Version de débogage pour Fireworks.ai
 
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
+  console.log('LOG 1: La fonction generate-image (version Fireworks) a été appelée.');
+
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
 
-  // On utilise la nouvelle clé API de Fireworks
   const FIREWORKS_API_KEY = process.env.FIREWORKS_API_KEY;
-  if (!FIREWORKS_API_KEY) return { statusCode: 500, body: JSON.stringify({ error: "FIREWORKS_API_KEY non configurée." }) };
+  if (!FIREWORKS_API_KEY || FIREWORKS_API_KEY === '') {
+    const errorMsg = "LOG 2: ERREUR CRITIQUE : La variable d'environnement FIREWORKS_API_KEY est manquante ou vide.";
+    console.error(errorMsg);
+    return { statusCode: 500, body: JSON.stringify({ error: errorMsg }) };
+  }
+  
+  console.log('LOG 3: Clé API Fireworks trouvée (commence par: ' + FIREWORKS_API_KEY.substring(0, 5) + '...).');
 
   try {
     const { prompt } = JSON.parse(event.body);
+    console.log('LOG 4: Prompt reçu :', prompt);
+
     const finalPrompt = `Photo de haute qualité, style photographie de produit, d'un projet créatif DIY (fait maison) : "${prompt}". Sur fond uni, couleurs vives.`;
+    const requestBody = {
+      model: 'stable-diffusion-xl-1024-v1-0',
+      prompt: finalPrompt,
+      height: 1024,
+      width: 1024,
+    };
+    
+    console.log('LOG 5: Corps de la requête envoyé à Fireworks :', JSON.stringify(requestBody, null, 2));
 
     const response = await fetch(
-      // L'URL de l'API Fireworks pour Stable Diffusion
       'https://api.fireworks.ai/inference/v1/text_to_image',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          // L'authentification est plus simple
-          'Authorization': `Bearer ${FIREWORKS_API_KEY}`, 
+          'Authorization': `Bearer ${FIREWORKS_API_KEY}`,
         },
-        // Le corps de la requête est un simple objet JSON
-        body: JSON.stringify({
-          model: 'stable-diffusion-xl-1024-v1-0', // Un excellent modèle d'image
-          prompt: finalPrompt,
-          height: 1024,
-          width: 1024,
-        }),
+        body: JSON.stringify(requestBody),
       }
     );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Erreur API Fireworks: ${response.status} - ${errorText}`);
-      throw new Error(`Le service d'image Fireworks a renvoyé une erreur.`);
+      const errorMsg = `LOG 6: L'API Fireworks a renvoyé une erreur. Statut: ${response.status}. Réponse: ${errorText}`;
+      console.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
+    console.log('LOG 7: Réponse de Fireworks reçue avec succès.');
     const data = await response.json();
-    
-    // Fireworks renvoie l'image directement en format base64
     const base64Image = data.artifacts[0].base64;
 
     return {
@@ -51,7 +60,8 @@ exports.handler = async (event) => {
       body: JSON.stringify({ image: `data:image/png;base64,${base64Image}` })
     };
   } catch (error) {
-    console.error("Erreur dans la fonction generate-image:", error);
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    const errorMsg = `LOG 8: Une erreur est survenue dans le bloc try-catch : ${error.message}`;
+    console.error(errorMsg);
+    return { statusCode: 500, body: JSON.stringify({ error: errorMsg }) };
   }
 };
