@@ -1,5 +1,5 @@
 // Fichier : script.js
-// VERSION FINALE ET CORRIGÉE : Correction du bug du prompt et clarification de la modale.
+// VERSION FINALE (VRAIMENT) : Utilise la suggestion de l'utilisateur pour le prompt et corrige le bug.
 
 document.addEventListener('DOMContentLoaded', function() {
   const findProjectsButton = document.querySelector('.bot-section button');
@@ -10,9 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const modalOverlay = document.getElementById('modal-overlay');
   const modalCloseBtn = document.getElementById('modal-close-btn');
 
-  // Logique pour trouver les idées (inchangée)
-  findProjectsButton.addEventListener('click', getIdeas);
+  // NOUVEAU : Une variable simple pour mémoriser le dernier titre cliqué.
+  let currentSelectedTitle = '';
 
+  // --- Logique pour trouver les idées (inchangée) ---
+  findProjectsButton.addEventListener('click', getIdeas);
   async function getIdeas() {
     const materials = materiauxInput.value;
     if (materials.trim() === '') {
@@ -38,35 +40,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Logique pour afficher les idées (inchangée)
+  // --- Logique pour afficher les idées (inchangée) ---
   function displayIdeas(projectList) {
     ideaListDiv.innerHTML = '<h3>Cliquez sur une idée pour obtenir le tuto :</h3>';
     projectList.forEach(idea => {
       const ideaElement = document.createElement('div');
       ideaElement.className = 'idea-item';
       ideaElement.innerHTML = `<h4>${idea.title}</h4><p>${idea.description}</p>`;
-      
-      // On stocke le titre directement sur l'élément pour le récupérer sans erreur
-      ideaElement.dataset.title = idea.title;
-
-      ideaElement.addEventListener('click', (e) => {
-        // On récupère l'élément parent sur lequel on a cliqué
-        const clickedIdea = e.currentTarget;
-        const title = clickedIdea.dataset.title; // On lit le titre stocké
-
+      ideaElement.addEventListener('click', () => {
         document.querySelectorAll('.idea-item').forEach(el => el.classList.remove('selected'));
-        clickedIdea.classList.add('selected');
-        
-        getTutorialForIdea(title);
+        ideaElement.classList.add('selected');
+        // On passe le titre à la fonction suivante
+        getTutorialForIdea(idea.title);
       });
-      
       ideaListDiv.appendChild(ideaElement);
     });
   }
   
-  // Logique pour obtenir le tutoriel
+  // --- Logique pour obtenir le tutoriel ---
   async function getTutorialForIdea(title) {
     tutoDetailDiv.innerHTML = '<p>Génération du tutoriel en cours...</p>';
+    // On mémorise le titre dès qu'on le reçoit.
+    currentSelectedTitle = title;
     try {
       const response = await fetch('/.netlify/functions/get-ai-ideas', {
         method: 'POST',
@@ -85,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const visualizeBtn = document.createElement('button');
       visualizeBtn.textContent = 'Visualiser ce projet';
       visualizeBtn.className = 'external-generator-btn';
-      // On passe le titre à la fonction qui affiche la modale
-      visualizeBtn.onclick = () => showVisualizationModal(title);
+      // Le bouton n'a plus besoin de passer le titre, il appelle juste la fonction.
+      visualizeBtn.onclick = showVisualizationModal; 
       tutoDetailDiv.appendChild(visualizeBtn);
 
     } catch (error) {
@@ -95,12 +90,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Logique pour AFFICHER et PRÉPARER la modale
-  function showVisualizationModal(title) {
-    console.log(`Préparation de la modale pour le titre : "${title}"`); // Pour vérifier dans la console (F12)
+  // --- Logique pour AFFICHER et PRÉPARER la modale ---
+  function showVisualizationModal() {
+    // La fonction lit la variable mémorisée, ce qui est beaucoup plus fiable.
+    const title = currentSelectedTitle;
 
-    // CORRECTION : On s'assure que le prompt utilise le bon titre
-    const finalPrompt = `photo de haute qualité d'un projet DIY (fait maison) : "${title}". Style photographie de produit, sur fond uni.`;
+    // Sécurité au cas où le titre serait vide.
+    if (!title) {
+      alert("Erreur : Impossible de récupérer le titre du projet. Veuillez réessayer.");
+      return;
+    }
+
+    // On utilise DIRECTEMENT le titre comme prompt, comme vous l'avez suggéré.
+    const finalPrompt = title; 
     const promptBox = document.getElementById('modal-prompt-box');
     
     promptBox.innerHTML = `
@@ -109,8 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     
     document.getElementById('copy-prompt-btn').addEventListener('click', (e) => {
-      const input = e.target.previousElementSibling;
-      navigator.clipboard.writeText(input.value);
+      navigator.clipboard.writeText(finalPrompt);
       e.target.textContent = 'Copié !';
       setTimeout(() => { e.target.textContent = 'Copier'; }, 2000);
     });
@@ -118,11 +119,10 @@ document.addEventListener('DOMContentLoaded', function() {
     modalOverlay.classList.remove('hidden');
   }
 
-  // Logique pour FERMER la modale (inchangée)
+  // --- Logique pour FERMER la modale (inchangée) ---
   function hideModal() {
     modalOverlay.classList.add('hidden');
   }
-
   modalCloseBtn.addEventListener('click', hideModal);
   modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) {
