@@ -32,11 +32,15 @@ Ce projet utilise une architecture moderne et efficace pour minimiser les coûts
     *   **Groq API** avec le modèle **Llama 3** pour la génération des idées de projets et des tutoriels.
 *   **Code source :** Maintenu et versionné avec Git sur **GitHub**.
 
-#### Comment ça marche ?
 
-Le flux de données est simple et sécurisé :
+## ⚙️ Comment ça marche ?
 
-`Navigateur du client` ➡️ `Appel à une Netlify Function` ➡️ `Appel sécurisé à l'API Groq (clé API cachée)` ➡️ `Retour à la Netlify Function` ➡️ `Retour au client`
+🔹 **Étape 1** : L'utilisateur entre les objets à disposition  
+🔹 **Étape 2** : L'app appelle une Netlify Function  
+🔹 **Étape 3** : Cette fonction communique avec l'API Groq (modèle Llama 3)  
+🔹 **Étape 4** : Les idées et tutoriels sont renvoyés au navigateur  
+🔹 **Étape 5** : L'utilisateur peut générer un visuel du projet via un site externe  
+
 
 ### 🔮 Objectifs à venir
 
