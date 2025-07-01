@@ -1,5 +1,5 @@
 // Fichier : script.js
-// Version de débogage pour voir la réponse du serveur
+// Version finale et fonctionnelle
 
 document.addEventListener('DOMContentLoaded', function() {
   const findProjectsButton = document.querySelector('.bot-section button');
@@ -28,30 +28,26 @@ document.addEventListener('DOMContentLoaded', function() {
         throw new Error('Le serveur a renvoyé une réponse négative.');
       }
       
-      const ideas = await response.json();
-
-      // ======================================================================
-      // LIGNE DE DÉBOGAGE CRUCIALE : On affiche la variable "ideas" dans la console
-      console.log('Données brutes reçues du serveur (variable "ideas") :', ideas);
-      // ======================================================================
-
-      displayIdeas(ideas);
+      const ideasData = await response.json();
+      displayIdeas(ideasData);
 
     } catch (error) {
-      console.error(error); // Affiche l'erreur technique dans la console
-      ideaListDiv.innerHTML = `<p>Désolé, une erreur est survenue : ${error.message}</p>`; // Affiche un message simple à l'utilisateur
+      console.error(error);
+      ideaListDiv.innerHTML = `<p>Désolé, une erreur est survenue : ${error.message}</p>`;
     } finally {
       findProjectsButton.disabled = false;
     }
   });
 
-  function displayIdeas(ideas) {
-    // Si la réponse est un objet qui contient une clé "ideas" ou "result", on l'extrait
-    // C'est une protection courante contre les variations de l'API
-    const projectList = Array.isArray(ideas) ? ideas : ideas.ideas || ideas.result;
+  function displayIdeas(ideasData) {
+    // ======================================================================
+    // CORRECTION APPLIQUÉE ICI
+    // On extrait la liste de la clé "projects" à l'intérieur de l'objet reçu.
+    const projectList = ideasData.projects;
+    // ======================================================================
 
     if (!Array.isArray(projectList)) {
-        console.error("La réponse finale n'est toujours pas un tableau :", projectList);
+        console.error("La liste de projets est introuvable dans la réponse :", ideasData);
         throw new Error("Le format des données reçues est incorrect.");
     }
       
