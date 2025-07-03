@@ -4,121 +4,306 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Make DIY Great Again</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Open+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png" />
+  <style>
+    :root { --rouge: #C1442E; --ecru: #F5F1E7; --noir: #1E1E1E; --bois: #D2A679; --vert: #6D8B74; --gris: #A8A8A8; --theme-toggle-icon: "☀️"; }
+    body.dark-mode { --rouge: #e74c3c; --ecru: #2a2a2a; --noir: #e0e0e0; --bois: #c7956a; --vert: #5a7463; --gris: #7f8c8d; --theme-toggle-icon: "🌙"; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: 'Open Sans', sans-serif; background-color: var(--ecru); color: var(--noir); transition: background-color 0.3s, color 0.3s; }
+    :focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; }
+    header { background-color: var(--rouge); color: white; padding: 1rem 2rem; text-align: center; }
+    header h1 { margin: 0; font-family: 'Staatliches', sans-serif; font-size: 2.5rem; }
+    header p { margin-top: 0; }
+    header img { max-height: 120px; display: block; margin: 0 auto 10px auto; }
+    .hero-intro { text-align: center; margin: 40px auto; padding: 10px; max-width: 800px; }
+    .typewriter p { display: inline-block; overflow: hidden; border-right: 3px solid var(--ecru); white-space: nowrap; animation: typing 4s steps(50, end), blink .75s step-end infinite; font-family: 'Staatliches', cursive; font-size: 1.5rem; margin: 0; }
+    @keyframes typing { from { width: 0; } to { width: 100%; } }
+    @keyframes blink { from, to { border-color: transparent; } 50% { border-color: var(--ecru); } }
+    nav { background-color: var(--noir); color: var(--ecru); display: flex; justify-content: center; gap: 2rem; padding: 0.5rem; position: sticky; top: 0; z-index: 999; }
+    nav a { color: var(--ecru); text-decoration: none; font-weight: bold; transition: color 0.2s ease-in-out; }
+    nav a:hover { color: var(--rouge); }
+    .section { padding: 2rem; max-width: 800px; margin: 0 auto; }
+    .section h2 { font-family: 'Staatliches', sans-serif; color: var(--rouge); }
+    .manifeste { background-color: var(--bois); padding: 1.5rem; border-radius: 8px; }
+    .bot-section { background-color: var(--vert); color: var(--ecru); padding: 2rem; border-radius: 8px; margin-top: 2rem; }
+    .bot-section h2 { color: var(--ecru); }
+    .bot-section label { display: block; width: 100%; box-sizing: border-box; margin: 1rem 0; font-size: 1rem; font-weight: bold; }
+    .bot-section input[type="text"] { width: 100%; padding: 0.75rem; border-radius: 5px; border: 2px solid var(--ecru); background-color: var(--ecru); font-family: 'Open Sans', sans-serif; box-sizing: border-box; margin: 0 0 1rem 0; color: #333; }
+    .bot-section button { background-color: var(--rouge); color: white; border: none; padding: 0.75rem 1rem; border-radius: 5px; cursor: pointer; transition: all 0.2s ease-in-out; width: 100%; box-sizing: border-box; font-weight: bold; font-size: 1rem; }
+    .bot-section button:hover:not(:disabled) { opacity: 0.9; transform: scale(1.02); }
+    .bot-section button:disabled { background-color: var(--gris); cursor: not-allowed; transform: none; }
+    #ideaList { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .idea-item { border: 1px solid var(--bois); padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease-in-out; background: var(--ecru); color: var(--noir); }
+    .idea-item h4, .idea-item p { margin: 0; }
+    .idea-item:hover { border-color: var(--rouge); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
+    .idea-item.selected { background-color: var(--rouge); border-color: var(--rouge); color: white; }
+    #tutoDetail { margin-top: 1.5rem; background: var(--ecru); color: var(--noir); padding: 1.5rem; border-radius: 5px; line-height: 1.6; border-left: 4px solid var(--rouge); }
+    footer { background-color: var(--noir); color: var(--ecru); text-align: center; padding: 1rem; }
+    .common-toggle-button { background: var(--section-bg); color: var(--text-color); border: 1px solid #ccc; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; padding: 0; }
+    .theme-toggle::before { content: var(--theme-toggle-icon); }
+    .top-right-controls { position: fixed; top: 1rem; right: 1rem; display: flex; align-items: center; gap: 8px; z-index: 1001; }
+    .lang-switcher { display: flex; gap: 5px; }
+    .lang-switcher button { opacity: 0.6; }
+    .lang-switcher button.lang-active { opacity: 1; border-color: var(--rouge) !important; }
+    #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1002; transition: opacity 0.3s; }
+    #modal-overlay.hidden { opacity: 0; pointer-events: none; }
+    #modal-content { background: var(--ecru); color: var(--noir); padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%; position: relative; text-align: center; }
+    #modal-close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--noir); }
+    #modal-prompt-box { background: var(--ecru); border: 1px solid var(--bois); padding: 1rem; border-radius: 4px; margin: 1rem 0; font-family: monospace; display: flex; gap: 10px; }
+    #modal-prompt-box input { flex-grow: 1; background: none; border: none; padding: 5px; color: var(--noir); }
+    #modal-prompt-box button { width: auto; margin: 0; }
+    #modal-external-link { display: inline-block; background-color: var(--vert); color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; margin-top: 1rem; }
+    .modal-info { font-size: 0.8rem; margin-top: 1rem; opacity: 0.7; }
+    @media (max-width: 768px) { .section { padding: 1.5rem 1rem; } nav { flex-direction: column; gap: 0.5rem; padding: 1rem; } }
+  </style>
 </head>
 <body>
-  <header>
-<section class="hero-intro">
-  <div class="typewriter">
-    <p>"Redonner vie à l'inutile, c’est offrir une nouvelle chance à l’imaginaire."</p>
-  </div>
-</section>
 
+  <div class="top-right-controls">
+    <div class="lang-switcher">
+      <button id="lang-fr-btn" class="common-toggle-button" aria-label="Passer en Français">🇫🇷</button>
+      <button id="lang-en-btn" class="common-toggle-button" aria-label="Switch to English">🇬🇧</button>
+    </div>
+    <button id="theme-toggle" class="theme-toggle common-toggle-button" data-key="theme_toggle_label"></button>
+  </div>
+  
+  <header>
+    <section class="hero-intro">
+      <div class="typewriter">
+        <p data-key="hero_quote">"Redonner vie à l'inutile, c’est offrir une nouvelle chance à l’imaginaire."</p>
+      </div>
+    </section>
     <a href="#"><img src="logo.png" alt="Logo Make DIY Great Again" /></a>
     <h1>Make DIY Great Again</h1>
     <p>by Alex Koncept</p>
   </header>
+  
   <nav>
-    <a href="#manifeste">Manifeste</a>
-    <a href="#tutos">Tutos</a>
-    <a href="#contribuer">Contribuer</a>
-    <a href="#ai-workshop">L'Atelier de l'IA</a>
-    <a href="#contact">Contact</a>
+    <a href="#manifeste" data-key="nav_manifesto">Manifeste</a>
+    <a href="#tutos" data-key="nav_tutorials">Tutos</a>
+    <a href="#contribuer" data-key="nav_contribute">Contribuer</a>
+    <a href="#ai-workshop" data-key="nav_ai_workshop">L'Atelier de l'IA</a>
+    <a href="#contact" data-key="nav_contact">Contact</a>
   </nav>
 
   <main>
     <section class="section" id="manifeste">
-      <h2>Le Manifeste</h2>
+      <h2 data-key="manifesto_title">Le Manifeste</h2>
       <div class="manifeste">
-        <p>
-Le DIY, pour moi, c’est bien plus qu’un passe-temps. C’est une manière de penser, de vivre, de transmettre.<br>
-Il n’y a rien de plus gratifiant que de donner une seconde vie à des objets oubliés, usés ou cassés… et de les     transformer en quelque chose d’utile, de beau ou de surprenant.<br>
-Combiner un vieux clavier, un moteur, deux bouts de bois et créer quelque chose de différent ou de plus utile, c’est magique.<br>
-Mais le plus beau dans tout ça, c’est de voir la curiosité s’allumer dans les yeux de mes enfants. Ces moments où l’on bricole ensemble, où je leur montre qu’avec de l’imagination et un peu d’huile de coude, on peut tout réinventer… ça n’a pas de prix.<br>
-    <strong>Make DIY Great Again.</strong>
-
-        </p>
-        <ul>
+        <p data-key="manifesto_p1">Le DIY, pour moi, c’est bien plus qu’un passe-temps... C’est une manière de penser, de vivre, de transmettre.<br>Il n’y a rien de plus gratifiant que de donner une seconde vie à des objets oubliés, usés ou cassés…<br>Combiner un vieux clavier, un moteur, deux bouts de bois et créer quelque chose de différent, c’est magique.<br>Mais le plus beau, c’est de voir la curiosité s’allumer dans les yeux de mes enfants... ça n’a pas de prix.<br><strong>Make DIY Great Again.</strong></p>
+        <ul data-key="manifesto_list">
           <li>Créer au lieu de consommer. Réparer au lieu de jeter.</li>
           <li>Ce que tu crois foutu peut encore surprendre.</li>
-          <li>Un tournevis, c’est un super-pouvoir. Entre de bonnes mains, il peut tout changer.</li>
+          <li>Un tournevis, c’est un super-pouvoir.</li>
         </ul>
       </div>
     </section>
 
     <section class="section" id="tutos">
-      <h2>Projets et Tutos</h2>
-      <ul>
-        <li><strong>Vieux PC + Raspberry Pi :</strong> Crée un serveur local ou une borne rétro gaming</li>
-        <li><strong>Arduino + LED :</strong> Fabrique une veilleuse programmable</li>
+      <h2 data-key="tutorials_title">Projets et Tutos</h2>
+      <ul data-key="tutorials_list">
+        <li><strong>Vieux PC + Raspberry Pi :</strong> Serveur local ou borne rétro gaming</li>
+        <li><strong>Arduino + LED :</strong> Veilleuse programmable</li>
         <li><strong>Moteur + bois :</strong> Mini tour ou machine à gravure DIY</li>
-        <li><strong>Bouteilles plastique :</strong> Range-câbles ou modules de rangement empilables</li>
+        <li><strong>Bouteilles plastique :</strong> Range-câbles</li>
       </ul>
     </section>
 
     <section class="section" id="contribuer">
-      <h2>Contribuer</h2>
-      <p>Tu as une idée, une création ou une astuce ? Partage-la avec la communauté.</p>
-      <ul>
-        <li>Écris un petit tuto ou fais un croquis de ton plan</li>
-        <li>Montre-nous ta création (photos, vidéos... tout est bon !)</li>
-        <li>Participe aux défis DIY du mois à venir</li>
+      <h2 data-key="contribute_title">Contribuer</h2>
+      <p data-key="contribute_p1">Tu as une idée, une création ou une astuce ? Partage-la avec la communauté.</p>
+      <ul data-key="contribute_list">
+        <li>Écris un petit tuto ou fais un croquis</li>
+        <li>Montre-nous ta création (photos, vidéos...)</li>
+        <li>Participe aux défis DIY du mois</li>
       </ul>
-  <p>📩 Envoie-moi tout ça à :  
-    <a href="mailto:alexkonceptuniverse@gmail.com">alexkonceptuniverse@gmail.com</a>
-  </p>
-</section>
+      <p data-key="contribute_p2">📩 Envoie-moi tout ça à : <a href="mailto:alexkonceptuniverse@gmail.com">alexkonceptuniverse@gmail.com</a></p>
+    </section>
 
-<section class="section bot-section" id="ai-workshop">
-  <h2>L'Atelier de l'IA</h2>
-  <p>Décris ton matériel, et notre IA te proposera plusieurs projets. Clique sur une idée pour obtenir un mini-tuto !</p>
-  
-  <label for="materiaux">De quoi disposes-tu ?</label>
-  <input type="text" id="materiaux" name="materiaux" placeholder="Ex: une vieille souris, des bouteilles en plastique, un arduino...">
-
-  <button>Trouve-moi des projets !</button>
-  
-  <div id="ideaList"></div>
-  <div id="tutoDetail"></div>
-  <div id="imageGeneratorContainer"></div>
-</section>
-
----------
-
+    <section class="section bot-section" id="ai-workshop">
+      <h2 data-key="ai_title">L'Atelier de l'IA</h2>
+      <p data-key="ai_intro">Décris ton matériel, et notre IA te proposera plusieurs projets. Clique sur une idée pour obtenir un mini-tuto !</p>
+      <label for="materiaux" data-key="ai_label">De quoi disposes-tu ?</label>
+      <input type="text" id="materiaux" name="materiaux" data-key-placeholder="ai_placeholder">
+      <button id="findProjectsBtn" data-key="ai_find_btn">Trouve-moi des projets !</button>
+      <div id="ideaList"></div>
+      <div id="tutoDetail"></div>
+    </section>
   </main>
 
-  <footer>
-    <p>© 2025 Make DIY Great Again by Alex Koncept</p>
+  <footer id="contact">
+    <p data-key="footer_text">© 2025 Make DIY Great Again by Alex Koncept</p>
   </footer>
 
-  <script src="script.js" defer></script>
-<!-- Fichier: index.html -->
-<!-- ... (tout le reste de votre page) ... -->
-
-  </footer>
-
-  <script src="script.js" defer></script>
-
-  <!-- NOUVELLE SECTION POUR LA FENÊTRE MODALE -->
   <div id="modal-overlay" class="hidden">
     <div id="modal-content">
       <button id="modal-close-btn">×</button>
-      <h4>Générateur d'images externe</h4>
-      <p>Copiez ce prompt optimisé et collez-le sur le site qui s'ouvrira.</p>
-      <div id="modal-prompt-box">
-        <!-- Le prompt sera inséré ici par JavaScript -->
-      </div>
-      <a id="modal-external-link" href="https://www.craiyon.com/" target="_blank" rel="noopener noreferrer">
-        Ouvrir le générateur dans un nouvel onglet
-      </a>
-      <p class="modal-info">L'ouverture d'un nouvel onglet est nécessaire car les sites externes bloquent l'intégration directe.</p>
+      <h4 data-key="modal_title">Générateur d'images externe</h4>
+      <p data-key="modal_intro">Copiez ce prompt et collez-le sur le site qui s'ouvrira.</p>
+      <div id="modal-prompt-box"></div>
+      <a id="modal-external-link" href="https://www.craiyon.com/" target="_blank" rel="noopener noreferrer" data-key="modal_link">Ouvrir le générateur</a>
+      <p class="modal-info" data-key="modal_disclaimer">L'ouverture d'un nouvel onglet est nécessaire car les sites externes bloquent l'intégration directe.</p>
     </div>
   </div>
-  <!-- FIN DE LA SECTION MODALE -->
-</body>
-</html>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const findProjectsButton = document.getElementById('findProjectsBtn');
+    const materiauxInput = document.getElementById('materiaux');
+    const ideaListDiv = document.getElementById('ideaList');
+    const tutoDetailDiv = document.getElementById('tutoDetail');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    let currentSelectedTitle = '';
+
+    const translations = {
+        fr: {
+            theme_toggle_label: "Changer le thème", hero_quote: "\"Redonner vie à l'inutile, c’est offrir une nouvelle chance à l’imaginaire.\"",
+            nav_manifesto: "Manifeste", nav_tutorials: "Tutos", nav_contribute: "Contribuer", nav_ai_workshop: "L'Atelier de l'IA", nav_contact: "Contact",
+            manifesto_title: "Le Manifeste", manifesto_p1: "Le DIY, pour moi, c’est bien plus qu’un passe-temps... C’est une manière de penser, de vivre, de transmettre.<br>Il n’y a rien de plus gratifiant que de donner une seconde vie à des objets oubliés, usés ou cassés…<br>Combiner un vieux clavier, un moteur, deux bouts de bois et créer quelque chose de différent, c’est magique.<br>Mais le plus beau, c’est de voir la curiosité s’allumer dans les yeux de mes enfants... ça n’a pas de prix.<br><strong>Make DIY Great Again.</strong>",
+            manifesto_list: "<li>Créer au lieu de consommer. Réparer au lieu de jeter.</li><li>Ce que tu crois foutu peut encore surprendre.</li><li>Un tournevis, c’est un super-pouvoir.</li>",
+            tutorials_title: "Projets et Tutos", tutorials_list: "<li><strong>Vieux PC + Raspberry Pi :</strong> Serveur local ou borne rétro gaming</li><li><strong>Arduino + LED :</strong> Veilleuse programmable</li><li><strong>Moteur + bois :</strong> Mini tour ou machine à gravure DIY</li><li><strong>Bouteilles plastique :</strong> Range-câbles</li>",
+            contribute_title: "Contribuer", contribute_p1: "Tu as une idée, une création ou une astuce ? Partage-la avec la communauté.", contribute_list: "<li>Écris un petit tuto ou fais un croquis</li><li>Montre-nous ta création (photos, vidéos...)</li><li>Participe aux défis DIY du mois</li>", contribute_p2: "📩 Envoie-moi tout ça à : <a href='mailto:alexkonceptuniverse@gmail.com'>alexkonceptuniverse@gmail.com</a>",
+            ai_title: "L'Atelier de l'IA", ai_intro: "Décris ton matériel, et notre IA te proposera plusieurs projets. Clique sur une idée pour obtenir un mini-tuto !", ai_label: "De quoi disposes-tu ?", ai_placeholder: "Ex: une vieille souris, des bouteilles en plastique, un arduino...", ai_find_btn: "Trouve-moi des projets !",
+            footer_text: "© 2025 Make DIY Great Again by Alex Koncept",
+            modal_title: "Générateur d'images externe", modal_intro: "Copiez ce prompt et collez-le sur le site qui s'ouvrira.", modal_link: "Ouvrir le générateur", modal_disclaimer: "L'ouverture d'un nouvel onglet est nécessaire.",
+            ai_error_no_materials: "Veuillez décrire le matériel dont vous disposez.", ai_searching: "Recherche d'idées en cours...", ai_server_error: "Erreur serveur.", ai_tuto_generating: "Génération du tutoriel en cours...", ai_tuto_error: "Désolé, impossible de générer le tutoriel.", ai_visualize_btn: "Visualiser ce projet", ai_copy_btn: "Copier", ai_copied_btn: "Copié !"
+        },
+        en: {
+            theme_toggle_label: "Change theme", hero_quote: "\"Bringing the useless back to life is giving imagination a new chance.\"",
+            nav_manifesto: "Manifesto", nav_tutorials: "Tutorials", nav_contribute: "Contribute", nav_ai_workshop: "The AI Workshop", nav_contact: "Contact",
+            manifesto_title: "The Manifesto", manifesto_p1: "For me, DIY is much more than a hobby... It's a way of thinking, living, and passing on knowledge.<br>There is nothing more rewarding than giving a second life to forgotten, worn, or broken objects...<br>Combining an old keyboard, a motor, and two pieces of wood to create something different is magic.<br>But the best part is seeing the curiosity light up in my children's eyes... that is priceless.<br><strong>Make DIY Great Again.</strong>",
+            manifesto_list: "<li>Create instead of consuming. Repair instead of throwing away.</li><li>What you think is junk can still surprise you.</li><li>A screwdriver is a superpower.</li>",
+            tutorials_title: "Projects and Tutorials", tutorials_list: "<li><strong>Old PC + Raspberry Pi:</strong> Home server or retro gaming station</li><li><strong>Arduino + LED:</strong> Programmable night light</li><li><strong>Motor + wood:</strong> DIY mini lathe or engraving machine</li><li><strong>Plastic bottles:</strong> Cable organizers</li>",
+            contribute_title: "Contribute", contribute_p1: "Have an idea, a creation, or a tip? Share it with the community.", contribute_list: "<li>Write a short tutorial or sketch out a plan</li><li>Show us your creation (photos, videos...)</li><li>Participate in the monthly DIY challenges</li>", contribute_p2: "📩 Send it all to me at: <a href='mailto:alexkonceptuniverse@gmail.com'>alexkonceptuniverse@gmail.com</a>",
+            ai_title: "The AI Workshop", ai_intro: "Describe your materials, and our AI will suggest several projects. Click on an idea to get a mini-tutorial!", ai_label: "What materials do you have?", ai_placeholder: "e.g., an old mouse, plastic bottles, an arduino...", ai_find_btn: "Find projects for me!",
+            footer_text: "© 2025 Make DIY Great Again by Alex Koncept",
+            modal_title: "External Image Generator", modal_intro: "Copy this prompt and paste it into the site that will open.", modal_link: "Open generator", modal_disclaimer: "Opening a new tab is necessary.",
+            ai_error_no_materials: "Please describe the materials you have.", ai_searching: "Searching for ideas...", ai_server_error: "Server error.", ai_tuto_generating: "Generating tutorial...", ai_tuto_error: "Sorry, could not generate the tutorial.", ai_visualize_btn: "Visualize this project", ai_copy_btn: "Copy", ai_copied_btn: "Copied!"
+        }
+    };
+    
+    const setLanguage = (lang) => {
+        document.documentElement.lang = lang;
+        localStorage.setItem('mdiygaLang', lang);
+        document.querySelectorAll('[data-key]').forEach(elem => {
+            const key = elem.dataset.key;
+            const translation = translations[lang]?.[key];
+            if (translation) {
+                if (elem.id === 'theme-toggle') { elem.setAttribute('aria-label', translation); }
+                else { elem.innerHTML = translation; }
+            }
+        });
+        document.querySelectorAll('[data-key-placeholder]').forEach(elem => {
+            const key = elem.dataset.keyPlaceholder;
+            if (translations[lang]?.[key]) { elem.placeholder = translations[lang][key]; }
+        });
+    };
+    const langFrBtn = document.getElementById('lang-fr-btn');
+    const langEnBtn = document.getElementById('lang-en-btn');
+    langFrBtn.addEventListener('click', () => setLanguage('fr'));
+    langEnBtn.addEventListener('click', () => setLanguage('en'));
+    
+    const currentTheme = localStorage.getItem('mdiygaTheme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (currentTheme === 'dark') { body.classList.add('dark-mode'); }
+    themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        localStorage.setItem('mdiygaTheme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+
+    async function getIdeas() {
+        const lang = document.documentElement.lang;
+        const materials = materiauxInput.value;
+        if (materials.trim() === '') {
+            ideaListDiv.innerHTML = `<p>${translations[lang].ai_error_no_materials}</p>`;
+            return;
+        }
+        ideaListDiv.innerHTML = `<p>${translations[lang].ai_searching}</p>`;
+        tutoDetailDiv.innerHTML = '';
+        findProjectsButton.disabled = true;
+        try {
+            const response = await fetch('/.netlify/functions/get-ai-ideas', {
+                method: 'POST',
+                body: JSON.stringify({ materials: materials, lang: lang })
+            });
+            if (!response.ok) throw new Error(translations[lang].ai_server_error);
+            const ideasData = await response.json();
+            displayIdeas(ideasData.projects);
+        } catch (error) {
+            ideaListDiv.innerHTML = `<p>${error.message}</p>`;
+        } finally {
+            findProjectsButton.disabled = false;
+        }
+    }
+
+    function displayIdeas(projectList) {
+        ideaListDiv.innerHTML = '';
+        projectList.forEach(idea => {
+            const ideaElement = document.createElement('div');
+            ideaElement.className = 'idea-item';
+            ideaElement.innerHTML = `<h4>${idea.title}</h4><p>${idea.description}</p>`;
+            ideaElement.addEventListener('click', () => {
+                document.querySelectorAll('.idea-item').forEach(el => el.classList.remove('selected'));
+                ideaElement.classList.add('selected');
+                getTutorialForIdea(idea.title);
+            });
+            ideaListDiv.appendChild(ideaElement);
+        });
+    }
+  
+    async function getTutorialForIdea(title) {
+        const lang = document.documentElement.lang;
+        tutoDetailDiv.innerHTML = `<p>${translations[lang].ai_tuto_generating}</p>`;
+        currentSelectedTitle = title;
+        try {
+            const response = await fetch('/.netlify/functions/get-ai-ideas', {
+                method: 'POST',
+                body: JSON.stringify({ idea_title: title, lang: lang })
+            });
+            if (!response.ok) throw new Error(translations[lang].ai_server_error);
+            const tutoData = await response.json();
+            const tutorialHtml = tutoData.tutorial.map(stepObject => `<li>${Object.values(stepObject)[0]}</li>`).join('');
+            tutoDetailDiv.innerHTML = `<h4>${title}</h4><ol>${tutorialHtml}</ol>`;
+
+            const visualizeBtn = document.createElement('button');
+            visualizeBtn.textContent = translations[lang].ai_visualize_btn;
+            visualizeBtn.onclick = showVisualizationModal; 
+            tutoDetailDiv.appendChild(visualizeBtn);
+        } catch (error) {
+            tutoDetailDiv.innerHTML = `<p>${translations[lang].ai_tuto_error}: ${error.message}</p>`;
+        }
+    }
+
+    function showVisualizationModal() {
+        const lang = document.documentElement.lang;
+        const title = currentSelectedTitle;
+        if (!title) return;
+        
+        const finalPrompt = `DIY ${title}`; 
+        const promptBox = document.getElementById('modal-prompt-box');
+        promptBox.innerHTML = `<input type="text" value="${finalPrompt}" readonly /><button id="copy-prompt-btn">${translations[lang].ai_copy_btn}</button>`;
+        
+        document.getElementById('copy-prompt-btn').addEventListener('click', (e) => {
+            navigator.clipboard.writeText(finalPrompt);
+            e.target.textContent = translations[lang].ai_copied_btn;
+            setTimeout(() => { e.target.textContent = translations[lang].ai_copy_btn; }, 2000);
+        });
+        modalOverlay.classList.remove('hidden');
+    }
+
+    function hideModal() { modalOverlay.classList.add('hidden'); }
+    modalCloseBtn.addEventListener('click', hideModal);
+    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) hideModal(); });
+
+    findProjectsButton.addEventListener('click', getIdeas);
+    
+    const initialLang = localStorage.getItem('mdiygaLang') || (navigator.language.startsWith('fr') ? 'fr' : 'en');
+    setLanguage(initialLang);
+});
+</script>
+
 </body>
 </html>
