@@ -11,16 +11,16 @@
     body.dark-mode { --rouge: #e74c3c; --ecru: #2a2a2a; --noir: #e0e0e0; --bois: #c7956a; --vert: #5a7463; --gris: #7f8c8d; --theme-toggle-icon: "🌙"; }
     html { scroll-behavior: smooth; }
     body { margin: 0; font-family: 'Open Sans', sans-serif; background-color: var(--ecru); color: var(--noir); transition: background-color 0.3s, color 0.3s; }
-    :focus-visible { outline: 2px solid var(--rouge); outline-offset: 2px; }
     header { background-color: var(--rouge); color: white; padding: 1rem 2rem; text-align: center; }
     header h1 { margin: 0; font-family: 'Staatliches', sans-serif; font-size: 2.5rem; }
     header p { margin-top: 0; }
     header img { max-height: 120px; display: block; margin: 0 auto 10px auto; }
     .hero-intro { text-align: center; margin: 40px auto; padding: 10px; max-width: 800px; }
-    .typewriter p { display: inline-block; overflow: hidden; border-right: 3px solid var(--ecru); white-space: nowrap; animation: typing 4s steps(50, end), blink .75s step-end infinite; font-family: 'Staatliches', cursive; font-size: 1.5rem; margin: 0; }
+    .typewriter { overflow: hidden; display: inline-block; }
+    .typewriter p { display: inline-block; vertical-align: bottom; overflow: hidden; border-right: 3px solid var(--ecru); white-space: nowrap; animation: typing 4s steps(50, end), blink .75s step-end infinite; font-family: 'Staatliches', cursive; font-size: 1.5rem; margin: 0; }
     @keyframes typing { from { width: 0; } to { width: 100%; } }
     @keyframes blink { from, to { border-color: transparent; } 50% { border-color: var(--ecru); } }
-    nav { background-color: var(--noir); color: var(--ecru); display: flex; justify-content: center; gap: 2rem; padding: 0.5rem; position: sticky; top: 0; z-index: 999; }
+    nav { background-color: var(--noir); color: var(--ecru); display: flex; justify-content: center; gap: 2rem; padding: 0.5rem; position: sticky; top: 0; z-index: 999; flex-wrap: wrap; }
     nav a { color: var(--ecru); text-decoration: none; font-weight: bold; transition: color 0.2s ease-in-out; }
     nav a:hover { color: var(--rouge); }
     .section { padding: 2rem; max-width: 800px; margin: 0 auto; }
@@ -39,8 +39,9 @@
     .idea-item:hover { border-color: var(--rouge); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
     .idea-item.selected { background-color: var(--rouge); border-color: var(--rouge); color: white; }
     #tutoDetail { margin-top: 1.5rem; background: var(--ecru); color: var(--noir); padding: 1.5rem; border-radius: 5px; line-height: 1.6; border-left: 4px solid var(--rouge); }
+    #tutoDetail ol { padding-left: 20px; }
     footer { background-color: var(--noir); color: var(--ecru); text-align: center; padding: 1rem; }
-    .common-toggle-button { background: var(--section-bg); color: var(--text-color); border: 1px solid #ccc; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; padding: 0; }
+    .common-toggle-button { background: var(--ecru); color: var(--noir); border: 1px solid #ccc; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; padding: 0; }
     .theme-toggle::before { content: var(--theme-toggle-icon); }
     .top-right-controls { position: fixed; top: 1rem; right: 1rem; display: flex; align-items: center; gap: 8px; z-index: 1001; }
     .lang-switcher { display: flex; gap: 5px; }
@@ -55,7 +56,7 @@
     #modal-prompt-box button { width: auto; margin: 0; }
     #modal-external-link { display: inline-block; background-color: var(--vert); color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; margin-top: 1rem; }
     .modal-info { font-size: 0.8rem; margin-top: 1rem; opacity: 0.7; }
-    @media (max-width: 768px) { .section { padding: 1.5rem 1rem; } nav { flex-direction: column; gap: 0.5rem; padding: 1rem; } }
+    @media (max-width: 768px) { .section { padding: 1.5rem 1rem; } nav { gap: 1rem; } }
   </style>
 </head>
 <body>
@@ -118,6 +119,7 @@
         <li>Montre-nous ta création (photos, vidéos...)</li>
         <li>Participe aux défis DIY du mois</li>
       </ul>
+      <p data-key="contribute_p2">📩 Envoie-moi tout ça à : <a href="mailto:alexkonceptuniverse@gmail.com">alexkonceptuniverse@
       <p data-key="contribute_p2">📩 Envoie-moi tout ça à : <a href="mailto:alexkonceptuniverse@gmail.com">alexkonceptuniverse@gmail.com</a></p>
     </section>
 
