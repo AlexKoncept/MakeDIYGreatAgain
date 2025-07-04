@@ -11,15 +11,10 @@
     body.dark-mode { --rouge: #e74c3c; --ecru: #2a2a2a; --noir: #e0e0e0; --bois: #c7956a; --vert: #5a7463; --gris: #7f8c8d; --theme-toggle-icon: "🌙"; }
     html { scroll-behavior: smooth; }
     body { margin: 0; font-family: 'Open Sans', sans-serif; background-color: var(--ecru); color: var(--noir); transition: background-color 0.3s, color 0.3s; }
-    header { background-color: var(--rouge); color: white; padding: 1rem 2rem; text-align: center; }
+    header { background-color: var(--rouge); color: white; padding: 2rem 1rem; text-align: center; }
     header h1 { margin: 0; font-family: 'Staatliches', sans-serif; font-size: 2.5rem; }
     header p { margin-top: 0; }
     header img { max-height: 120px; display: block; margin: 0 auto 10px auto; }
-    .hero-intro { text-align: center; margin: 40px auto; padding: 10px; max-width: 800px; }
-    .typewriter { overflow: hidden; display: inline-block; }
-    .typewriter p { display: inline-block; vertical-align: bottom; overflow: hidden; border-right: 3px solid var(--ecru); white-space: nowrap; animation: typing 4s steps(50, end), blink .75s step-end infinite; font-family: 'Staatliches', cursive; font-size: 1.5rem; margin: 0; }
-    @keyframes typing { from { width: 0; } to { width: 100%; } }
-    @keyframes blink { from, to { border-color: transparent; } 50% { border-color: var(--ecru); } }
     nav { background-color: var(--noir); color: var(--ecru); display: flex; justify-content: center; gap: 2rem; padding: 0.5rem; position: sticky; top: 0; z-index: 999; flex-wrap: wrap; }
     nav a { color: var(--ecru); text-decoration: none; font-weight: bold; transition: color 0.2s ease-in-out; }
     nav a:hover { color: var(--rouge); }
@@ -70,11 +65,6 @@
   </div>
   
   <header>
-    <section class="hero-intro">
-      <div class="typewriter">
-        <p data-key="hero_quote">"Redonner vie à l'inutile, c’est offrir une nouvelle chance à l’imaginaire."</p>
-      </div>
-    </section>
     <a href="#"><img src="logo.png" alt="Logo Make DIY Great Again" /></a>
     <h1>Make DIY Great Again</h1>
     <p>by Alex Koncept</p>
@@ -119,7 +109,6 @@
         <li>Montre-nous ta création (photos, vidéos...)</li>
         <li>Participe aux défis DIY du mois</li>
       </ul>
-      <p data-key="contribute_p2">📩 Envoie-moi tout ça à : <a href="mailto:alexkonceptuniverse@gmail.com">alexkonceptuniverse@
       <p data-key="contribute_p2">📩 Envoie-moi tout ça à : <a href="mailto:alexkonceptuniverse@gmail.com">alexkonceptuniverse@gmail.com</a></p>
     </section>
 
@@ -145,7 +134,7 @@
       <p data-key="modal_intro">Copiez ce prompt et collez-le sur le site qui s'ouvrira.</p>
       <div id="modal-prompt-box"></div>
       <a id="modal-external-link" href="https://www.craiyon.com/" target="_blank" rel="noopener noreferrer" data-key="modal_link">Ouvrir le générateur</a>
-      <p class="modal-info" data-key="modal_disclaimer">L'ouverture d'un nouvel onglet est nécessaire car les sites externes bloquent l'intégration directe.</p>
+      <p class="modal-info" data-key="modal_disclaimer">L'ouverture d'un nouvel onglet est nécessaire.</p>
     </div>
   </div>
 
@@ -163,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const translations = {
         fr: {
-            theme_toggle_label: "Changer le thème", hero_quote: "\"Redonner vie à l'inutile, c’est offrir une nouvelle chance à l’imaginaire.\"",
+            theme_toggle_label: "Changer le thème",
             nav_manifesto: "Manifeste", nav_tutorials: "Tutos", nav_contribute: "Contribuer", nav_ai_workshop: "L'Atelier de l'IA", nav_contact: "Contact",
             manifesto_title: "Le Manifeste", manifesto_p1: "Le DIY, pour moi, c’est bien plus qu’un passe-temps... C’est une manière de penser, de vivre, de transmettre.<br>Il n’y a rien de plus gratifiant que de donner une seconde vie à des objets oubliés, usés ou cassés…<br>Combiner un vieux clavier, un moteur, deux bouts de bois et créer quelque chose de différent, c’est magique.<br>Mais le plus beau, c’est de voir la curiosité s’allumer dans les yeux de mes enfants... ça n’a pas de prix.<br><strong>Make DIY Great Again.</strong>",
             manifesto_list: "<li>Créer au lieu de consommer. Réparer au lieu de jeter.</li><li>Ce que tu crois foutu peut encore surprendre.</li><li>Un tournevis, c’est un super-pouvoir.</li>",
@@ -175,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ai_error_no_materials: "Veuillez décrire le matériel dont vous disposez.", ai_searching: "Recherche d'idées en cours...", ai_server_error: "Erreur serveur.", ai_tuto_generating: "Génération du tutoriel en cours...", ai_tuto_error: "Désolé, impossible de générer le tutoriel.", ai_visualize_btn: "Visualiser ce projet", ai_copy_btn: "Copier", ai_copied_btn: "Copié !"
         },
         en: {
-            theme_toggle_label: "Change theme", hero_quote: "\"Bringing the useless back to life is giving imagination a new chance.\"",
+            theme_toggle_label: "Change theme",
             nav_manifesto: "Manifesto", nav_tutorials: "Tutorials", nav_contribute: "Contribute", nav_ai_workshop: "The AI Workshop", nav_contact: "Contact",
             manifesto_title: "The Manifesto", manifesto_p1: "For me, DIY is much more than a hobby... It's a way of thinking, living, and passing on knowledge.<br>There is nothing more rewarding than giving a second life to forgotten, worn, or broken objects...<br>Combining an old keyboard, a motor, and two pieces of wood to create something different is magic.<br>But the best part is seeing the curiosity light up in my children's eyes... that is priceless.<br><strong>Make DIY Great Again.</strong>",
             manifesto_list: "<li>Create instead of consuming. Repair instead of throwing away.</li><li>What you think is junk can still surprise you.</li><li>A screwdriver is a superpower.</li>",
